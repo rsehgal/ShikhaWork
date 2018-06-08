@@ -12,7 +12,7 @@ double startx = 0.;
 double endx = 250.;
 TApplication *fApp = new TApplication("Test", NULL, NULL);
 TCanvas *c = new TCanvas("TestCanvas", "Energy Histogram", 800, 600);
-c->Divide(3,3);
+c->Divide(3,4);
 c->cd(1);
 TH1F *energyHist = new TH1F("EnergyHistogram","EnergyHistogram",nbinsx,startx,endx);
 std::ifstream infile(filename);
@@ -118,6 +118,43 @@ finalEnergyHist->Draw();
 //Drawing Histogram of final Div
 c->cd(8);
 finalDivHist->Draw();
+
+
+
+//Drawing Particle histogram
+c->cd(9);
+TH1F *particleHist = new TH1F("ParticleHistogram","ParticleHistogram",10,0,10);
+std::ifstream particleFile("particles.txt");
+std::string particleName="";
+int code=0;
+nbinsx=1000;
+startx=-10;
+endx=30000.;
+TH1F *electronHist = new TH1F("ElectronHistogram","ElectronHistogram",nbinsx,startx,endx);
+TH1F *positronHist = new TH1F("PositronHistogram","PositronHistogram",nbinsx,startx,endx);
+TH1F *gammaHist = new TH1F("GammaHistogram","GammaHistogram",nbinsx,startx,endx);
+double secondaryEnergy=0.;
+while(!particleFile.eof()){
+  particleFile >> particleName >> code >> secondaryEnergy;
+  particleHist->Fill(code);
+  if(particleName=="e-")
+    electronHist->Fill(secondaryEnergy*1000.);
+  if(particleName=="e+")
+    positronHist->Fill(secondaryEnergy*1000.);
+  if(particleName=="gamma")
+    gammaHist->Fill(secondaryEnergy*1000.);
+  
+}
+
+particleHist->Draw();
+
+//Drawing secondary particles energy histograms
+c->cd(10);
+electronHist->Draw();
+c->cd(11);
+positronHist->Draw();
+c->cd(12);
+gammaHist->Draw();
 
 fApp->Run();
 

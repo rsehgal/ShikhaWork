@@ -81,6 +81,59 @@ outfile.close();
         
 	//std::cout << " @@ KE : "<< track->GetKineticEnergy() <<" @@ " ;
   }
+    
+
+   bool isSecondary =(track->GetParentID() !=0 );
+
+  if(isSecondary){
+     std::string particleName= track->GetDefinition()->GetParticleName() ;
+
+     std::ofstream outfile3("particles.txt",std::ios::app);
+     int code = 0;
+     if(particleName=="e-")
+	code = 2;
+     if(particleName=="e+")
+	code = 4;
+     if(particleName=="gamma")
+	code = 6;
+
+    double kEnergy = track->GetKineticEnergy();
+    if(kEnergy*1000>=1e-7)
+    	outfile3 << particleName << " " << code << " " << kEnergy << std::endl;
+
+    outfile3.close();
+
+     //std::cout <<"shikha this is the particle name:  "<< particleName << std::endl;
+     
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //  G4ThreeVector hitPre = track->GetPosition();
 //  G4ThreeVector hitPost = track->GetPosition();
 //  G4ThreeVector hitBeginOfPost = track->GetPosition();
