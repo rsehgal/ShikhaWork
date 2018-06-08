@@ -65,6 +65,7 @@ outfile.close();
   if(isPrimary && touch1->GetVolume()->GetName()== "PhysicalDRZ3"
 
                           && point1->GetStepStatus()==fGeomBoundary){
+        double Finalenergy=  track->GetKineticEnergy();
         std::ofstream outfile2("finalexitPoints.txt",std::ios::app);
 //	std::cout << "\nHit Location : " << point2->GetPosition() << std::endl;
         
@@ -75,7 +76,7 @@ outfile.close();
             
          fdir = fdir.unit();
           double diversionAnglefinal = fdir.angle(G4ThreeVector(0.,0.,1.));
-          outfile2 << finalexitPoint.x() << " " << finalexitPoint.y() <<" " <<finalexitPoint.z()<< " "<< diversionAnglefinal<< " " << std::sqrt(finalexitPoint.x()*finalexitPoint.x()+finalexitPoint.y()*finalexitPoint.y())<<std::endl;
+          outfile2 << finalexitPoint.x() << " " << finalexitPoint.y() <<" " <<finalexitPoint.z()<< " "<< diversionAnglefinal<< " " << std::sqrt(finalexitPoint.x()*finalexitPoint.x()+finalexitPoint.y()*finalexitPoint.y())<<" "<<  Finalenergy <<std::endl;
          outfile2.close();
         
 	//std::cout << " @@ KE : "<< track->GetKineticEnergy() <<" @@ " ;

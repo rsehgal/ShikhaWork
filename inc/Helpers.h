@@ -12,7 +12,7 @@ double startx = 0.;
 double endx = 250.;
 TApplication *fApp = new TApplication("Test", NULL, NULL);
 TCanvas *c = new TCanvas("TestCanvas", "Energy Histogram", 800, 600);
-c->Divide(3,2);
+c->Divide(3,3);
 c->cd(1);
 TH1F *energyHist = new TH1F("EnergyHistogram","EnergyHistogram",nbinsx,startx,endx);
 std::ifstream infile(filename);
@@ -69,14 +69,25 @@ grExit->Draw("AP");
 exitfile.close();
 
 
-std::vector<double> x1,y1;
+std::vector<double> x1,y1,dVector,eVector;
 std::ifstream finalExitfile("finalexitPoints.txt");
-double exX1(0.),exY1(0.),exDiv1(0.),exRad1(0.),z(0.);
+double exX1(0.),exY1(0.),exDiv1(0.),exRad1(0.),z(0.),Finalenergy(0.);
 
+nbinsx=100.;
+startx=0.;
+endx=60.;
+TH1F *finalEnergyHist = new TH1F("FinalEnergyHistogram","FinalEnergyHistogram",nbinsx,startx,endx);
+startx=0.;
+endx=150.;
+TH1F *finalDivHist = new TH1F("FinalDivHistogram","FinalDivHistogram",nbinsx,startx,endx);
 while(!finalExitfile.eof()){
-  finalExitfile >> exX1 >> exY1 >> z >> exDiv1 >> exRad1;
+  finalExitfile >> exX1 >> exY1 >> z >> exDiv1 >> exRad1 >> Finalenergy;
   x1.push_back(exX1);
   y1.push_back(exY1);
+  dVector.push_back(exDiv1);
+  eVector.push_back(Finalenergy);
+  finalEnergyHist->Fill(Finalenergy);
+finalDivHist->Fill(exDiv1*1000.);
 } 
 
 std::cout<<"FinalExitPoints.txt reading done...... Size of Final Exit points : " << x1.size() << std::endl;
@@ -90,6 +101,23 @@ grExit->GetXaxis()->SetTitle("X Coordinate");
 grExit->GetYaxis()->SetTitle("Y Coordinate");
 grExit->Draw("AP");
 }
+
+c->cd(6);
+{
+TGraph *grExit = new TGraph(eVector.size(),&eVector[0],&dVector[0]);
+grExit->SetTitle("Final Energy with divergence");
+grExit->GetXaxis()->SetTitle("Energy");
+grExit->GetYaxis()->SetTitle("Divergence");
+grExit->Draw("AP");
+}
+
+
+//Drawing Histogram of final energy
+c->cd(7);
+finalEnergyHist->Draw();
+//Drawing Histogram of final Div
+c->cd(8);
+finalDivHist->Draw();
 
 fApp->Run();
 
