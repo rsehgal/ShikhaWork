@@ -20,6 +20,9 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake/modules)
 # You can set WITH_GEANT4_UIVIS to OFF via the command line or ccmake/cmake-gui
 # to build a batch mode only executable
 #
+
+option(ROOT "Enable ROOT" OFF)
+
 option(WITH_GEANT4_UIVIS "Build example with Geant4 UI and Vis drivers" ON)
 if(WITH_GEANT4_UIVIS)
   find_package(Geant4 REQUIRED ui_all vis_all)
@@ -27,10 +30,12 @@ else()
   find_package(Geant4 REQUIRED)
 endif()
 
-find_package(ROOT REQUIRED)
-message(STATUS "Raman"${ROOT_INCLUDE_DIR})
-include_directories(AFTER SYSTEM ${ROOT_INCLUDE_DIR})
 
+if(ROOT)
+add_definitions(-DUSE_ROOT)
+find_package(ROOT REQUIRED)
+include_directories(AFTER SYSTEM ${ROOT_INCLUDE_DIR})
+endif(ROOT)
 #----------------------------------------------------------------------------
 
 
@@ -47,8 +52,11 @@ file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cpp ${PROJECT_SOURCE_DIR}/src/*.cc
 file(GLOB headers ${PROJECT_SOURCE_DIR}/inc/*.h ${PROJECT_SOURCE_DIR}/inc/*.hh ../../base/Vector3D.h) 
 
 add_executable(main main.cpp ${sources} ${headers})
+if(ROOT)
 target_link_libraries(main ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
-
 add_executable(plot plot.cpp ${PROJECT_SOURCE_DIR}/inc/Helpers.h)
 target_link_libraries(plot ${ROOT_LIBRARIES})
-#target_link_libraries(main ${Geant4_LIBRARIES} Tomo)
+else()
+target_link_libraries(main ${Geant4_LIBRARIES}) 
+endif(ROOT)
+

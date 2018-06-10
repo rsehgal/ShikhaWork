@@ -12,7 +12,10 @@
 #include <G4FastStep.hh>
 #include <string.h>
 #include "B1EventAction.hh"
+
+#ifdef USE_ROOT 
 #include "Helpers.h"
+#endif
 
 using namespace std;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -97,8 +100,9 @@ void B1RunAction::EndOfRunAction(const G4Run* run)
      << "--------------------End of Local Run------------------------";
   }
 
+#ifdef USE_ROOT 
   CreateHistogram("entryPoints.txt");
-  
+#endif  
   
 
 //  ofstream myfile;
